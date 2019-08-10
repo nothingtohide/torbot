@@ -1,2 +1,2 @@
-# freebsd-torbot
-A management tool for Tor on FreeBSD
+# Torbot, a Tor relay manager for FreeBSD
+Torbot is a small and basic Tor relay manager made specifically for FreeBSD. The motivation for Torbot came when we started running multiple Tor relays to help out the Tor network. On Debian (which we used before migrating to FreeBSD) it's all a bit easier to setup and manage because of `systemd` and `tor-instance-create`, but since FreeBSD doesn't have those available `torbot` will do for us.
