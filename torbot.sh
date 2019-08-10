@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #############################################################################
-# Version 0.1-DEVELOPMENT (10-08-2019)
+# Version 0.2-DEVELOPMENT (10-08-2019)
 #############################################################################
 
 #############################################################################
 # Torbot - a Tor relay manager for FreeBSD
-# Copyright 2019 Nozel/Sebas Veeke.
+# Copyright (C) 2019 Nozel/Sebas Veeke.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 3 as published
@@ -23,8 +23,14 @@
 #############################################################################
 # VARIABLES
 #############################################################################
+
 # torbot version
-TORBOT_VERSION='0.1'
+TORBOT_VERSION='0.2'
+
+# torbot directories
+TORBOT_DATABASE_DIR='/var/db/tor/torbot'
+TOR_RELAY_CONFIG_DIR='/usr/local/etc/tor'
+TOR_RELAY_DATA_DIR='/var/db/tor'
 
 #############################################################################
 # ARGUMENTS
@@ -53,6 +59,13 @@ while test -n "$1"; do
             shift
             ;;
 
+        # features
+        --create-tor-relay)
+            ARGUMENT_CREATE='1'
+            ARGUMENT_FEATURE='1'
+            shift
+            ;;
+
         # other
         *)
             ARGUMENT_NONE='1'
@@ -65,57 +78,57 @@ done
 # ERROR FUNCTIONS
 #############################################################################
 
-function error_invalid_option {
+error_invalid_option() {
     echo 'torbot: invalid option'
     echo "Use 'torbot --help' for a list of valid arguments."
     exit 1
 }
 
-function error_wrong_number_of_arguments {
+error_wrong_number_of_arguments() {
     echo 'torbot: wrong number of arguments'
     echo "Use 'torbot --help' for a list of valid arguments."
     exit 1
 }
 
-function error_not_yet_implemented {
+error_not_yet_implemented() {
     echo 'torbot: this feature has not been implemented yet.'
     exit 1
 }
 
-function error_os_not_supported {
+error_os_not_supported() {
     echo 'torbot: operating system is not supported.'
     exit 1
 }
 
-function error_not_available {
+error_not_available() {
     echo 'torbot: option or method is not available without the torbot configuration file.'
     exit 1
 }
 
-function error_no_feature_and_method {
+error_no_feature_and_method() {
     echo 'torbot: feature requires a method and vice versa'
     echo "Use 'torbot --help' for a list of valid arguments."
     exit 1
 }
 
-function error_options_cannot_be_combined {
+error_options_cannot_be_combined() {
     echo 'torbot: options cannot be used with features or methods'
     echo "Use 'torbot --help' for a list of valid arguments."
     exit 1    
 }
 
-function error_no_root_privileges {
+error_no_root_privileges() {
     echo 'torbot: you need to be root to perform this command'
     echo "use 'sudo torbot', 'sudo -s' or run torbot as root user."
     exit 1
 }
 
-function error_no_internet_connection {
+error_no_internet_connection() {
     echo 'torbot: access to the internet is required.'
     exit 1
 }
 
-function error_type_yes_or_no {
+error_type_yes_or_no() {
     echo "torbot: type yes or no and press enter to continue."
 }
 
@@ -127,7 +140,7 @@ function error_type_yes_or_no {
 # MANAGEMENT FUNCTIONS
 #############################################################################
 
-function torbot_version {
+torbot_version() {
     echo "Torbot ${torbot_VERSION}"
     echo "Copyright (C) 2019 Nozel."
     echo
@@ -138,7 +151,7 @@ function torbot_version {
     echo "Written by Sebas Veeke"
 }
 
-function torbot_help {
+torbot_help() {
     echo "Usage:"
     echo " torbot [feature]..."
     echo
@@ -157,16 +170,23 @@ function torbot_help {
 # FEATURE FUNCTIONS
 #############################################################################
 
+torbot_create() {
+    echo 'test'
+}
+
+
 #############################################################################
 # MAIN FUNCTION
 #############################################################################
 
-function torbot_main {
+torbot_main() {
     # options
     if [ "${ARGUMENT_VERSION}" == '1' ]; then
         torbot_version
     elif [ "${ARGUMENT_HELP}" == '1' ]; then
         torbot_help
+    elif [ "${ARGUMENT_CREATE}" == '1' ]; then
+        torbot_create
     fi
 }
 
