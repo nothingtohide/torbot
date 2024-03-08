@@ -1,0 +1,176 @@
+#!/bin/sh
+
+#############################################################################
+# Version 0.1.0-DEVELOPMENT (08-03-2025)
+#############################################################################
+
+#############################################################################
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright 2019 Sebas Veeke. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#############################################################################
+
+#############################################################################
+# Contact:
+# > E-mail      mail@nozel.org
+# > Website     https://nothingtohide.nl
+# > Codeberg    https://codeberg.org/nothingtohide/torbot
+#############################################################################
+
+#############################################################################
+# PROGRAM VARIABLES
+#############################################################################
+
+# version and date
+TORBOT_VERSION='0.1.0'
+TORBOT_VERSION_DATE='08-03-2025'
+
+# file locations
+TORBOT_DATABASE_DIR='/var/db/tor/torbot'
+TOR_RELAY_CONFIG_DIR='/usr/local/etc/tor'
+TOR_RELAY_DATA_DIR='/var/db/tor'
+
+# commands
+# ...
+
+#############################################################################
+# CONFIGURATION FILE HANDLING
+#############################################################################
+
+#############################################################################
+# ARGUMENT HANDLING
+#############################################################################
+
+# populate validation variables with zeros for validation
+
+# read arguments
+while test -n "$1"; do
+    case "$1" in
+        # options
+        --version)
+            ARGUMENT_VERSION='1'
+            shift
+            ;;
+
+        --help|-help|help|--h|-h)
+            ARGUMENT_HELP='1'
+            shift
+            ;;
+
+        # features
+        --create-tor-relay)
+            ARGUMENT_CREATE='1'
+            shift
+            ;;
+
+        # other
+        *)
+            ARGUMENT_NONE='1'
+            shift
+            ;;
+    esac
+done
+
+#############################################################################
+# ERROR FUNCTIONS
+#############################################################################
+
+program_error() {
+    printf "torbot: error: %s %s %s\n" "${1}" "${2}" "${3}"
+    exit 1
+}
+
+#############################################################################
+# REQUIREMENT AND VALIDATION FUNCTIONS
+#############################################################################
+
+requirement_root() {
+    # show error if updatebot isn't run with root privileges
+    if [ "$(id -u)" -ne '0' ]; then
+        program_error 'this feature must be run with root privileges'
+    fi
+}
+
+requirement_os() {
+    # show error if freebsd-version cannot be found
+    if [ ! "$(command -v freebsd-version)" ]; then
+        program_error 'operating system is not supported'
+    fi
+}
+
+# argument_validate() {}
+# torrc_configuration_validate() {}
+# relay_configuration_validate() {}
+
+#############################################################################
+# GENERAL FUNCTIONS
+#############################################################################
+
+torbot_version() {
+    printf "Torbot %s (%s)\n" "${TORBOT_VERSION}" "${TORBOT_VERSION_DATE}"
+    printf "Copyright (C) 2019 Sebas Veeke. All rights reserved.\n"
+    printf "SPDX-License-Identifier: Apache-2.0.\n"
+    exit 0
+}
+
+torbot_help() {
+    printf "Usage:\n"
+    printf "  serverbot [feature]                   # ..."
+    printf "  serverbot [option]\n\n"
+    printf "Features:\n"
+    printf "  -x, --xxxxx                xxxxxxxxxxxxxx\n"
+    printf "Options:\n"
+    printf "  --help                     Display this help and exit\n"
+    printf "  --version                  Display version information and exit\n"
+    exit 0
+}
+
+#############################################################################
+# GATHER FUNCTIONS
+#############################################################################
+
+#############################################################################
+# FEATURE FUNCTIONS
+#############################################################################
+
+torbot_create() {
+    echo 'test'
+}
+
+
+#############################################################################
+# MAIN FUNCTION
+#############################################################################
+
+torbot_main() {
+    # options
+    if [ "${ARGUMENT_VERSION}" == '1' ]; then
+        torbot_version
+    elif [ "${ARGUMENT_HELP}" == '1' ]; then
+        torbot_help
+    elif [ "${ARGUMENT_CREATE}" == '1' ]; then
+        torbot_create
+    # feature overview is shown when no arguments are given
+    else
+        ARGUMENT_OVERVIEW='1'
+        feature_overview
+    fi
+}
+
+#############################################################################
+# CALL MAIN FUNCTION
+#############################################################################
+
+torbot_main
